@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wizard Score Tracker (4 Players)</title>
+    <title>Wizard Score Tracker</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -15,6 +15,60 @@
         h1 {
             text-align: center;
             color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .controls {
+            max-width: 1000px;
+            margin: 0 auto 15px auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .controls-left, .controls-right {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .controls select, .controls button {
+            padding: 8px 12px;
+            font-size: 16px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+        }
+        .controls button {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            font-weight: bold;
+        }
+        .controls button:hover {
+            background-color: #c0392b;
+        }
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            background-color: #ecf0f1;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+        .toggle-container input {
+            margin-right: 5px;
+            cursor: pointer;
+        }
+        .game-desc {
+            text-align: center;
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 20px;
         }
         .container {
             max-width: 1000px;
@@ -28,13 +82,13 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
         }
         th, td {
             border: 1px solid #ddd;
             padding: 10px;
             text-align: center;
             vertical-align: top;
+            min-width: 120px;
         }
         th {
             background-color: #2c3e50;
@@ -57,6 +111,13 @@
             font-size: 12px;
             color: #7f8c8d;
         }
+        .bid-warning {
+            color: #c0392b;
+            font-size: 11px;
+            font-weight: bold;
+            display: none;
+            margin-top: 5px;
+        }
         .input-group {
             display: flex;
             justify-content: space-around;
@@ -68,22 +129,23 @@
             margin-bottom: 2px;
         }
         input[type="number"] {
-            width: 40px;
+            width: 45px;
             padding: 4px;
             text-align: center;
             border: 1px solid #ccc;
             border-radius: 4px;
+            font-size: 14px;
         }
         .scores {
             background-color: #ecf0f1;
-            padding: 5px;
+            padding: 8px;
             border-radius: 4px;
             margin-top: 5px;
             font-size: 14px;
         }
         .total-score {
             font-weight: bold;
-            font-size: 18px;
+            font-size: 20px;
             color: #27ae60;
             display: block;
             margin-top: 4px;
@@ -95,64 +157,186 @@
 </head>
 <body>
 
+<h1>Wizard Score Tracker</h1>
+
+<div class="controls">
+    <div class="controls-left">
+        <div>
+            <label for="playerCount" style="font-weight: bold; margin-right: 10px;">Number of Players:</label>
+            <select id="playerCount" onchange="initializeGame()">
+                <option value="3">3 Players</option>
+                <option value="4" selected>4 Players</option>
+                <option value="5">5 Players</option>
+                <option value="6">6 Players</option>
+            </select>
+        </div>
+        <div class="toggle-container">
+            <input type="checkbox" id="canadianRule" onchange="calculateScores()">
+            <label for="canadianRule" title="Dealer cannot make bids 'even' if they are in the lead.">"Even Bids" Warning</label>
+        </div>
+        <div class="toggle-container">
+            <input type="checkbox" id="wakeLockToggle" onchange="toggleWakeLock()">
+            <label for="wakeLockToggle" title="Prevent your screen from going to sleep during the game.">Keep Screen On</label>
+        </div>
+    </div>
+    <div class="controls-right">
+        <button onclick="resetBoard()">Reset Game</button>
+    </div>
+</div>
+
+<div class="game-desc" id="gameDesc">
+    </div>
+
 <div class="container">
-    <h1>Wizard Score Tracker</h1>
-    <p style="text-align: center;">4 Players = 15 Rounds. Points: Correct Bid = 20 + (10 &times; Tricks). Incorrect = -10 &times; Difference.</p>
-    
     <table id="scoreTable">
-        <thead>
-            <tr>
-                <th>Round</th>
-                <th><input type="text" class="player-name" value="Player 1"></th>
-                <th><input type="text" class="player-name" value="Player 2"></th>
-                <th><input type="text" class="player-name" value="Player 3"></th>
-                <th><input type="text" class="player-name" value="Player 4"></th>
-            </tr>
-        </thead>
+        <thead id="tableHead">
+            </thead>
         <tbody id="tableBody">
             </tbody>
     </table>
 </div>
 
 <script>
-    const totalRounds = 15;
-    const numPlayers = 4;
-    const tbody = document.getElementById('tableBody');
+    // --- WAKE LOCK LOGIC ---
+    let wakeLock = null;
 
-    // Generate Table Rows
-    for (let r = 1; r <= totalRounds; r++) {
-        const tr = document.createElement('tr');
+    async function toggleWakeLock() {
+        const toggle = document.getElementById('wakeLockToggle');
         
-        // Round Column
-        const tdRound = document.createElement('td');
-        tdRound.innerHTML = `<div class="round-info">Round ${r}</div><div class="tricks-avail">(${r} tricks)</div>`;
-        tr.appendChild(tdRound);
-
-        // Player Columns
-        for (let p = 1; p <= numPlayers; p++) {
-            const tdPlayer = document.createElement('td');
-            tdPlayer.innerHTML = `
-                <div class="input-group">
-                    <div>
-                        <label>Bid</label>
-                        <input type="number" min="0" max="${r}" class="bid p${p}-r${r}" onchange="calculateScores()">
-                    </div>
-                    <div>
-                        <label>Won</label>
-                        <input type="number" min="0" max="${r}" class="won p${p}-r${r}" onchange="calculateScores()">
-                    </div>
-                </div>
-                <div class="scores">
-                    Round Pts: <span class="round-pts p${p}-r${r}">-</span>
-                    <span class="total-score p${p}-r${r}">-</span>
-                </div>
-            `;
-            tr.appendChild(tdPlayer);
+        if (toggle.checked) {
+            if ('wakeLock' in navigator) {
+                try {
+                    wakeLock = await navigator.wakeLock.request('screen');
+                    wakeLock.addEventListener('release', () => {
+                        // If the lock is released (e.g., you minimize the browser), uncheck the box
+                        if (document.visibilityState === 'visible') {
+                            toggle.checked = false;
+                        }
+                    });
+                } catch (err) {
+                    alert("Your browser does not support keeping the screen on, or permission was denied.");
+                    toggle.checked = false;
+                }
+            } else {
+                alert("The Wake Lock feature is not supported by your current browser.");
+                toggle.checked = false;
+            }
+        } else {
+            if (wakeLock !== null) {
+                await wakeLock.release();
+                wakeLock = null;
+            }
         }
-        tbody.appendChild(tr);
+    }
+
+    // If you switch away from the browser and come back, it tries to re-lock the screen if the box is checked
+    document.addEventListener('visibilitychange', async () => {
+        const toggle = document.getElementById('wakeLockToggle');
+        if (wakeLock !== null && document.visibilityState === 'visible' && toggle.checked) {
+            // Re-request the wake lock
+            wakeLock = await navigator.wakeLock.request('screen');
+        }
+    });
+
+
+    // --- GAME TRACKER LOGIC ---
+    const gameConfig = {
+        3: 20,
+        4: 15,
+        5: 12,
+        6: 10
+    };
+
+    let playerNames = ["Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6"];
+
+    function initializeGame() {
+        const numPlayers = parseInt(document.getElementById('playerCount').value);
+        const totalRounds = gameConfig[numPlayers];
+        
+        document.getElementById('gameDesc').innerHTML = `<strong>${numPlayers} Players = ${totalRounds} Rounds.</strong><br>Points: Correct Bid = 20 + (10 &times; Tricks). Incorrect = -10 &times; Difference.`;
+
+        const thead = document.getElementById('tableHead');
+        let headerHTML = '<tr><th>Round</th>';
+        for (let p = 1; p <= numPlayers; p++) {
+            headerHTML += `<th><input type="text" class="player-name" id="name-p${p}" value="${playerNames[p-1]}" oninput="saveNames()"></th>`;
+        }
+        headerHTML += '</tr>';
+        thead.innerHTML = headerHTML;
+
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = '';
+        
+        for (let r = 1; r <= totalRounds; r++) {
+            const tr = document.createElement('tr');
+            
+            let rowHTML = `<td>
+                <div class="round-info">Round ${r}</div>
+                <div class="tricks-avail">(${r} tricks)</div>
+                <div class="bid-warning" id="warning-r${r}">Bids equal tricks!</div>
+            </td>`;
+            
+            for (let p = 1; p <= numPlayers; p++) {
+                rowHTML += `
+                    <td>
+                        <div class="input-group">
+                            <div>
+                                <label>Bid</label>
+                                <input type="number" min="0" max="${r}" class="bid p${p}-r${r}" oninput="calculateScores()">
+                            </div>
+                            <div>
+                                <label>Won</label>
+                                <input type="number" min="0" max="${r}" class="won p${p}-r${r}" oninput="calculateScores()">
+                            </div>
+                        </div>
+                        <div class="scores">
+                            Round: <span class="round-pts p${p}-r${r}">-</span>
+                            <span class="total-score p${p}-r${r}">-</span>
+                        </div>
+                    </td>
+                `;
+            }
+            tr.innerHTML = rowHTML;
+            tbody.appendChild(tr);
+        }
+        
+        calculateScores();
+    }
+
+    function saveNames() {
+        const numPlayers = parseInt(document.getElementById('playerCount').value);
+        for(let p = 1; p <= numPlayers; p++) {
+            const nameInput = document.getElementById(`name-p${p}`);
+            if(nameInput) {
+                playerNames[p-1] = nameInput.value;
+            }
+        }
     }
 
     function calculateScores() {
+        const numPlayers = parseInt(document.getElementById('playerCount').value);
+        const totalRounds = gameConfig[numPlayers];
+        const enforceCanadianRule = document.getElementById('canadianRule').checked;
+
+        for (let r = 1; r <= totalRounds; r++) {
+            let totalBidsForRound = 0;
+            let bidsEnteredCount = 0;
+
+            for (let p = 1; p <= numPlayers; p++) {
+                const bidInput = document.querySelector(`.bid.p${p}-r${r}`).value;
+                if (bidInput !== "") {
+                    totalBidsForRound += parseInt(bidInput);
+                    bidsEnteredCount++;
+                }
+            }
+
+            const warningElement = document.getElementById(`warning-r${r}`);
+            if (enforceCanadianRule && bidsEnteredCount === numPlayers && totalBidsForRound === r) {
+                warningElement.style.display = 'block';
+            } else {
+                warningElement.style.display = 'none';
+            }
+        }
+
         for (let p = 1; p <= numPlayers; p++) {
             let runningTotal = 0;
             
@@ -175,7 +359,6 @@
 
                     runningTotal += roundScore;
 
-                    // Update UI
                     roundPtsDisplay.textContent = roundScore > 0 ? "+" + roundScore : roundScore;
                     totalScoreDisplay.textContent = runningTotal;
                     
@@ -185,13 +368,22 @@
                         totalScoreDisplay.classList.remove('negative');
                     }
                 } else {
-                    // Clear downstream if missing data
                     roundPtsDisplay.textContent = "-";
                     totalScoreDisplay.textContent = "-";
                 }
             }
         }
     }
+
+    function resetBoard() {
+        if(confirm("Are you sure you want to clear the entire board and start a new game?")) {
+            const inputs = document.querySelectorAll('.bid, .won');
+            inputs.forEach(input => input.value = '');
+            calculateScores();
+        }
+    }
+
+    window.onload = initializeGame;
 </script>
 
 </body>
