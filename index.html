@@ -1,214 +1,198 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2685.4">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wizard Score Tracker (4 Players)</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+            vertical-align: top;
+        }
+        th {
+            background-color: #2c3e50;
+            color: white;
+        }
+        .player-name {
+            width: 90%;
+            padding: 5px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .round-info {
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .tricks-avail {
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+        .input-group {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 5px;
+        }
+        .input-group label {
+            font-size: 12px;
+            display: block;
+            margin-bottom: 2px;
+        }
+        input[type="number"] {
+            width: 40px;
+            padding: 4px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .scores {
+            background-color: #ecf0f1;
+            padding: 5px;
+            border-radius: 4px;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+        .total-score {
+            font-weight: bold;
+            font-size: 18px;
+            color: #27ae60;
+            display: block;
+            margin-top: 4px;
+        }
+        .negative {
+            color: #c0392b;
+        }
+    </style>
 </head>
 <body>
-<p class="p1">&lt;!DOCTYPE html&gt;</p>
-<p class="p1">&lt;html lang="en"&gt;</p>
-<p class="p1">&lt;head&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;Wizard Score Tracker (4 Players)&lt;/title&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>body {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background-color: #f4f4f9;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: #333;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin: 0;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>h1 {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>text-align: center;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: #2c3e50;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.container {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>max-width: 1000px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin: 0 auto;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background: #fff;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 8px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>box-shadow: 0 4px 8px rgba(0,0,0,0.1);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>overflow-x: auto;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>table {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>width: 100%;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-collapse: collapse;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-top: 10px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>th, td {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border: 1px solid #ddd;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 10px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>text-align: center;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>vertical-align: top;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>th {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background-color: #2c3e50;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: white;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.player-name {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>width: 90%;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 5px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>text-align: center;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-weight: bold;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 16px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border: 1px solid #ccc;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 4px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.round-info {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-weight: bold;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 16px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.tricks-avail {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 12px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: #7f8c8d;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.input-group {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>display: flex;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>justify-content: space-around;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 5px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.input-group label {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 12px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>display: block;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 2px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>input[type="number"] {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>width: 40px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 4px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>text-align: center;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border: 1px solid #ccc;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 4px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.scores {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background-color: #ecf0f1;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 5px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 4px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-top: 5px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 14px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.total-score {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-weight: bold;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 18px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: #27ae60;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>display: block;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-top: 4px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.negative {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: #c0392b;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
-<p class="p1">&lt;/head&gt;</p>
-<p class="p1">&lt;body&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;div class="container"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;h1&gt;Wizard Score Tracker&lt;/h1&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;p style="text-align: center;"&gt;4 Players = 15 Rounds. Points: Correct Bid = 20 + (10 &amp;times; Tricks). Incorrect = -10 &amp;times; Difference.&lt;/p&gt;</p>
-<p class="p2"><span class="Apple-converted-space">    </span></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;table id="scoreTable"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;thead&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;tr&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;th&gt;Round&lt;/th&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;th&gt;&lt;input type="text" class="player-name" value="Player 1"&gt;&lt;/th&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;th&gt;&lt;input type="text" class="player-name" value="Player 2"&gt;&lt;/th&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;th&gt;&lt;input type="text" class="player-name" value="Player 3"&gt;&lt;/th&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;th&gt;&lt;input type="text" class="player-name" value="Player 4"&gt;&lt;/th&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/tr&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/thead&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;tbody id="tableBody"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/tbody&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/table&gt;</p>
-<p class="p1">&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const totalRounds = 15;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const numPlayers = 4;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const tbody = document.getElementById('tableBody');</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Generate Table Rows</p>
-<p class="p1"><span class="Apple-converted-space">    </span>for (let r = 1; r &lt;= totalRounds; r++) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const tr = document.createElement('tr');</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>// Round Column</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const tdRound = document.createElement('td');</p>
-<p class="p1"><span class="Apple-converted-space">        </span>tdRound.innerHTML = `&lt;div class="round-info"&gt;Round ${r}&lt;/div&gt;&lt;div class="tricks-avail"&gt;(${r} tricks)&lt;/div&gt;`;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>tr.appendChild(tdRound);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>// Player Columns</p>
-<p class="p1"><span class="Apple-converted-space">        </span>for (let p = 1; p &lt;= numPlayers; p++) {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const tdPlayer = document.createElement('td');</p>
-<p class="p1"><span class="Apple-converted-space">            </span>tdPlayer.innerHTML = `</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="input-group"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;label&gt;Bid&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;input type="number" min="0" max="${r}" class="bid p${p}-r${r}" onchange="calculateScores()"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;label&gt;Won&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;input type="number" min="0" max="${r}" class="won p${p}-r${r}" onchange="calculateScores()"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="scores"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>Round Pts: &lt;span class="round-pts p${p}-r${r}"&gt;-&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;span class="total-score p${p}-r${r}"&gt;-&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>`;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>tr.appendChild(tdPlayer);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>tbody.appendChild(tr);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function calculateScores() {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>for (let p = 1; p &lt;= numPlayers; p++) {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>let runningTotal = 0;</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>for (let r = 1; r &lt;= totalRounds; r++) {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>const bidInput = document.querySelector(`.bid.p${p}-r${r}`).value;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>const wonInput = document.querySelector(`.won.p${p}-r${r}`).value;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>const roundPtsDisplay = document.querySelector(`.round-pts.p${p}-r${r}`);</p>
-<p class="p1"><span class="Apple-converted-space">                </span>const totalScoreDisplay = document.querySelector(`.total-score.p${p}-r${r}`);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">                </span>if (bidInput !== "" &amp;&amp; wonInput !== "") {</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>const bid = parseInt(bidInput);</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>const won = parseInt(wonInput);</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>let roundScore = 0;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">                    </span>if (bid === won) {</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>roundScore = 20 + (won * 10);</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>} else {</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>roundScore = -10 * Math.abs(bid - won);</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">                    </span>runningTotal += roundScore;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">                    </span>// Update UI</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>roundPtsDisplay.textContent = roundScore &gt; 0 ? "+" + roundScore : roundScore;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>totalScoreDisplay.textContent = runningTotal;</p>
-<p class="p2"><span class="Apple-converted-space">                    </span></p>
-<p class="p1"><span class="Apple-converted-space">                    </span>if (runningTotal &lt; 0) {</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>totalScoreDisplay.classList.add('negative');</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>} else {</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>totalScoreDisplay.classList.remove('negative');</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">                </span>} else {</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>// Clear downstream if missing data</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>roundPtsDisplay.textContent = "-";</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>totalScoreDisplay.textContent = "-";</p>
-<p class="p1"><span class="Apple-converted-space">                </span>}</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1">&lt;/script&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;/body&gt;</p>
-<p class="p1">&lt;/html&gt;</p>
+
+<div class="container">
+    <h1>Wizard Score Tracker</h1>
+    <p style="text-align: center;">4 Players = 15 Rounds. Points: Correct Bid = 20 + (10 &times; Tricks). Incorrect = -10 &times; Difference.</p>
+    
+    <table id="scoreTable">
+        <thead>
+            <tr>
+                <th>Round</th>
+                <th><input type="text" class="player-name" value="Player 1"></th>
+                <th><input type="text" class="player-name" value="Player 2"></th>
+                <th><input type="text" class="player-name" value="Player 3"></th>
+                <th><input type="text" class="player-name" value="Player 4"></th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            </tbody>
+    </table>
+</div>
+
+<script>
+    const totalRounds = 15;
+    const numPlayers = 4;
+    const tbody = document.getElementById('tableBody');
+
+    // Generate Table Rows
+    for (let r = 1; r <= totalRounds; r++) {
+        const tr = document.createElement('tr');
+        
+        // Round Column
+        const tdRound = document.createElement('td');
+        tdRound.innerHTML = `<div class="round-info">Round ${r}</div><div class="tricks-avail">(${r} tricks)</div>`;
+        tr.appendChild(tdRound);
+
+        // Player Columns
+        for (let p = 1; p <= numPlayers; p++) {
+            const tdPlayer = document.createElement('td');
+            tdPlayer.innerHTML = `
+                <div class="input-group">
+                    <div>
+                        <label>Bid</label>
+                        <input type="number" min="0" max="${r}" class="bid p${p}-r${r}" onchange="calculateScores()">
+                    </div>
+                    <div>
+                        <label>Won</label>
+                        <input type="number" min="0" max="${r}" class="won p${p}-r${r}" onchange="calculateScores()">
+                    </div>
+                </div>
+                <div class="scores">
+                    Round Pts: <span class="round-pts p${p}-r${r}">-</span>
+                    <span class="total-score p${p}-r${r}">-</span>
+                </div>
+            `;
+            tr.appendChild(tdPlayer);
+        }
+        tbody.appendChild(tr);
+    }
+
+    function calculateScores() {
+        for (let p = 1; p <= numPlayers; p++) {
+            let runningTotal = 0;
+            
+            for (let r = 1; r <= totalRounds; r++) {
+                const bidInput = document.querySelector(`.bid.p${p}-r${r}`).value;
+                const wonInput = document.querySelector(`.won.p${p}-r${r}`).value;
+                const roundPtsDisplay = document.querySelector(`.round-pts.p${p}-r${r}`);
+                const totalScoreDisplay = document.querySelector(`.total-score.p${p}-r${r}`);
+
+                if (bidInput !== "" && wonInput !== "") {
+                    const bid = parseInt(bidInput);
+                    const won = parseInt(wonInput);
+                    let roundScore = 0;
+
+                    if (bid === won) {
+                        roundScore = 20 + (won * 10);
+                    } else {
+                        roundScore = -10 * Math.abs(bid - won);
+                    }
+
+                    runningTotal += roundScore;
+
+                    // Update UI
+                    roundPtsDisplay.textContent = roundScore > 0 ? "+" + roundScore : roundScore;
+                    totalScoreDisplay.textContent = runningTotal;
+                    
+                    if (runningTotal < 0) {
+                        totalScoreDisplay.classList.add('negative');
+                    } else {
+                        totalScoreDisplay.classList.remove('negative');
+                    }
+                } else {
+                    // Clear downstream if missing data
+                    roundPtsDisplay.textContent = "-";
+                    totalScoreDisplay.textContent = "-";
+                }
+            }
+        }
+    }
+</script>
+
 </body>
 </html>
